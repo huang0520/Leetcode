@@ -1,0 +1,9 @@
+# Ignore every thing
+*
+# Unignore every folder
+!*/
+# Unignore file type 
+!.gitignore
+!*.md
+!*.cpp
+!*.py
