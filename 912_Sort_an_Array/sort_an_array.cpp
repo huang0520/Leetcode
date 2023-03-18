@@ -5,52 +5,45 @@ using namespace std;
 
 class Solution {
    public:
-    vector<int> sortArray(vector<int> nums) {
-        if (nums.size() == 1) {
-            return nums;
-        }
+    vector<int> sortArray(vector<int>& nums) {
+        mergeSort(nums, 0, nums.size() - 1);
 
-        // Split
-        auto mid = nums.begin() + nums.size() / 2;
-
-        auto left = sortArray(vector<int>(nums.begin(), mid));
-        auto right = sortArray(vector<int>(mid, nums.end()));
-
-        // Merge
-        return merge(left, right);
+        return nums;
     }
 
    private:
-    auto merge(vector<int> left, vector<int> right) -> vector<int> {
+    auto mergeSort(vector<int>& arr, int left, int right) -> void {
+        if (right == left) return;
+
+        // Split
+        int mid = (left + right) / 2;
+        mergeSort(arr, left, mid);
+        mergeSort(arr, mid + 1, right);
+
+        // Merge
+        merge(arr, left, mid, right);
+    }
+
+    auto merge(vector<int>& arr, int left, int mid, int right) -> void {
         vector<int> tmp;
-        tmp.reserve(left.size() + right.size());
 
         // Compare first value of two vector
-        auto l_itr = left.begin(), r_itr = right.begin();
-        while (l_itr != left.end() && r_itr != right.end()) {
-            if (*l_itr > *r_itr) {
-                tmp.emplace_back(*r_itr);
-                r_itr++;
-            } else {
-                tmp.emplace_back(*l_itr);
-                l_itr++;
-            }
-        }
+        int l = left, r = mid + 1, size = right - left + 1;
+        tmp.reserve(size);
 
-        for (; l_itr != left.end(); l_itr++) {
-            tmp.emplace_back(*l_itr);
-        }
+        while (l <= mid and r <= right)
+            tmp.emplace_back(arr[l] > arr[r] ? arr[r++] : arr[l++]);
 
-        for (; r_itr != right.end(); r_itr++) {
-            tmp.emplace_back(*r_itr);
-        }
+        while (l <= mid) tmp.emplace_back(arr[l++]);
 
-        return tmp;
+        while (r <= right) tmp.emplace_back(arr[r++]);
+
+        for (int i = 0; i < right - left + 1; i++) arr[left + i] = tmp[i];
     }
 };
 
 auto main() -> int {
-    vector<int> nums = {5, 2, 3, 1};
+    vector<int> nums = {7, 3, 3, 1};
 
     Solution sol;
     auto ans = sol.sortArray(nums);
