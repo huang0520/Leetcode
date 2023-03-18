@@ -1,5 +1,6 @@
 #include <iostream>
 #include <queue>
+#include <utility>
 
 using namespace std;
 
@@ -16,15 +17,18 @@ struct TreeNode {
 class Solution {
    public:
     TreeNode *invertTree(TreeNode *root) {
-        if (root == nullptr) return root;
+        queue<TreeNode *> stack;
+        if (root) stack.emplace(root);
 
-        invertTree(root->left);
-        invertTree(root->right);
+        while (!stack.empty()) {
+            auto node = stack.front();
+            stack.pop();
 
-        auto tmp = root->left;
-        root->left = root->right;
-        root->right = tmp;
+            swap(node->left, node->right);
 
+            if (node->left) stack.emplace(node->left);
+            if (node->right) stack.emplace(node->right);
+        }
         return root;
     }
 };
@@ -33,6 +37,9 @@ auto main() -> int {
     TreeNode *root = new TreeNode(4);
     root->left = new TreeNode(2, new TreeNode(1), new TreeNode(3));
     root->right = new TreeNode(7, new TreeNode(6), new TreeNode(9));
+
+    Solution sol;
+    sol.invertTree(root);
 
     return 0;
 }
