@@ -11,11 +11,13 @@ struct ListNode {
 class Solution {
    public:
     bool hasCycle(ListNode *head) {
-        if (!head) return false;
-        if (head->val == INT32_MIN) return true;
+        if (!head or !head->next) return false;
 
-        head->val = INT32_MIN;
-        return hasCycle(head->next);
+        for (ListNode *fast = head->next, *slow = head; fast != slow;
+             fast = fast->next->next, slow = slow->next)
+            if (!fast or !fast->next) return false;
+
+        return true;
     }
 };
 
